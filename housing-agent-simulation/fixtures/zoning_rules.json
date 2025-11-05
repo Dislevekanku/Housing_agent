@@ -1,0 +1,28 @@
+{
+  "MR-1": {
+    "residential": {
+      "min_lot_sqft": 4500,
+      "height_max_ft": 45
+    },
+    "mixed-use": {
+      "min_lot_sqft": 4000,
+      "height_max_ft": 50
+    }
+  },
+  "CC-2": {
+    "mixed-use": {
+      "min_lot_sqft": 8000,
+      "height_max_ft": 80
+    },
+    "commercial": {
+      "min_lot_sqft": 10000,
+      "height_max_ft": 90
+    }
+  },
+  "R-3": {
+    "residential": {
+      "min_lot_sqft": 6000,
+      "height_max_ft": 35
+    }
+  }
+}
