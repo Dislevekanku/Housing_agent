@@ -19,13 +19,12 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
 # Virtual environments
-.venv/
 venv/
-ENV/
 env/
+ENV/
+.venv
 
 # IDE
 .vscode/
@@ -34,31 +33,24 @@ env/
 *.swo
 *~
 
-# Logs
-logs/*.jsonl
+# Logs and artifacts
+logs/
 *.log
-
-# Metrics and artifacts (keep structure, ignore generated data)
-metrics.json
-artifacts/*/packet.json
+artifacts/
+*.jsonl
 
 # Environment variables
 .env
 .env.local
 
-# Node modules (if any)
-node_modules/
-
 # OS
 .DS_Store
 Thumbs.db
 
-# Temporary files
-*.tmp
-*.bak
-*.swp
+# Node modules (if any frontend)
+node_modules/
 
-# Keep directory structure but ignore content
-!logs/.gitkeep
-!artifacts/.gitkeep
+# Test outputs
+test_results.json
+*.pyc
 
