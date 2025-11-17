@@ -1,0 +1,16 @@
+{
+  "egress": {
+    "required": true,
+    "description": "All buildings must provide adequate egress routes"
+  },
+  "parking_ratio": {
+    "residential": 0.5,
+    "commercial": 1.0,
+    "mixed-use": 0.75,
+    "description": "Parking spaces per unit or per 1000 sqft"
+  },
+  "ada_access": {
+    "required": true,
+    "description": "ADA accessibility compliance required for all public buildings"
+  }
+}

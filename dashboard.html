@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Ledger Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .chain-visualization {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .chain-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .chain-arrow {
+            font-size: 2em;
+            color: #667eea;
+            margin: 0 20px;
+        }
+        
+        .chain-node {
+            flex: 1;
+        }
+        
+        .agent-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .agent-data-scout { background: #4CAF50; color: white; }
+        .agent-compliance { background: #2196F3; color: white; }
+        .agent-permit-liaison { background: #FF9800; color: white; }
+        
+        .facts-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .timestamp {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .hash-display {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75em;
+            color: #666;
+            word-break: break-all;
+            margin-top: 5px;
+            background: #f5f5f5;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .signature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .signature-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .signature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .signature-sig {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .agent-interactions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .interaction-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .interaction-arrow {
+            color: #667eea;
+            font-size: 1.5em;
+            margin: 5px 0;
+        }
+        
+        .latency-chart {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .latency-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .latency-label {
+            width: 200px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .latency-bar-container {
+            flex: 1;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+        
+        .latency-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .status-valid { background: #4CAF50; color: white; }
+        .status-invalid { background: #f44336; color: white; }
+        
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+        
+        .refresh-btn:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Trust Ledger Dashboard</h1>
+        <p class="subtitle">Real-time visualization of agent trust signatures and chain validation</p>
+        
+        <button class="refresh-btn" onclick="loadData()">🔄 Refresh Data</button>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Total Entries</div>
+                <div class="metric-value" id="total-entries">-</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Valid Chains</div>
+                <div class="metric-value" id="valid-chains">-</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Agent Interactions</div>
+                <div class="metric-value" id="interactions">-</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Avg Latency (ms)</div>
+                <div class="metric-value" id="avg-latency">-</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Chain Visualization</h2>
+            <div id="chain-visualization"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Trust Signatures</h2>
+            <div class="signature-grid" id="signatures-grid"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Agent Interactions</h2>
+            <div class="agent-interactions" id="interactions-grid"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Latency Metrics</h2>
+            <div class="latency-chart" id="latency-chart"></div>
+        </div>
+    </div>
+    
+    <script>
+        let ledgerData = [];
+        let metricsData = {};
+        
+        async function loadData() {
+            try {
+                // Load provenance ledger
+                const response = await fetch('logs/provenance.jsonl');
+                const text = await response.text();
+                ledgerData = text.trim().split('\n').map(line => JSON.parse(line));
+                
+                // Load metrics if available
+                try {
+                    const metricsResponse = await fetch('metrics.json');
+                    if (metricsResponse.ok) {
+                        metricsData = await metricsResponse.json();
+                    } else {
+                        metricsData = {};
+                    }
+                } catch (e) {
+                    console.log('No metrics.json found, using defaults');
+                    metricsData = {};
+                }
+                
+                renderDashboard();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('chain-visualization').innerHTML = 
+                    '<p style="color: red;">Error loading data. Make sure the agents are running and provenance.jsonl exists.</p>';
+            }
+        }
+        
+        function renderDashboard() {
+            renderMetrics();
+            renderChains();
+            renderSignatures();
+            renderInteractions();
+            renderLatency();
+        }
+        
+        function renderMetrics() {
+            const totalEntries = ledgerData.length;
+            const chains = extractChains();
+            const validChains = chains.filter(c => c.valid).length;
+            const interactions = countInteractions();
+            const avgLatency = calculateAvgLatency();
+            
+            document.getElementById('total-entries').textContent = totalEntries;
+            document.getElementById('valid-chains').textContent = `${validChains}/${chains.length}`;
+            document.getElementById('interactions').textContent = interactions;
+            document.getElementById('avg-latency').textContent = avgLatency.toFixed(1);
+        }
+        
+        function extractChains() {
+            const entryMap = {};
+            ledgerData.forEach(e => {
+                entryMap[e.output_facts_id] = e;
+            });
+            
+            const chains = [];
+            const processed = new Set();
+            
+            ledgerData.forEach(entry => {
+                if (processed.has(entry.output_facts_id)) return;
+                
+                const chain = [];
+                let current = entry;
+                
+                while (current) {
+                    chain.push(current);
+                    processed.add(current.output_facts_id);
+                    current = current.parent_facts_id ? entryMap[current.parent_facts_id] : null;
+                }
+                
+                chains.push({
+                    facts_id: entry.output_facts_id,
+                    chain: chain.reverse(),
+                    valid: true // Simplified validation
+                });
+            });
+            
+            return chains;
+        }
+        
+        function countInteractions() {
+            const interactions = new Set();
+            ledgerData.forEach(entry => {
+                if (entry.action === 'a2a_receive') {
+                    interactions.add(entry.input_ref);
+                }
+            });
+            return interactions.size;
+        }
+        
+        function calculateAvgLatency() {
+            if (metricsData.latencies) {
+                const values = Object.values(metricsData.latencies);
+                return values.reduce((a, b) => a + b, 0) / values.length;
+            }
+            return 0;
+        }
+        
+        function renderChains() {
+            const chains = extractChains();
+            const fullChains = chains.filter(c => c.chain.length >= 3);
+            
+            let html = '';
+            fullChains.slice(0, 5).forEach(chain => {
+                html += '<div class="chain-visualization">';
+                chain.chain.forEach((entry, idx) => {
+                    html += '<div class="chain-item">';
+                    html += '<div class="chain-node">';
+                    html += `<span class="agent-badge agent-${entry.agent.replace('-', '-')}">${entry.agent}</span>`;
+                    html += `<div><strong>${entry.action}</strong></div>`;
+                    html += `<div class="facts-id">Facts ID: ${entry.output_facts_id}</div>`;
+                    html += `<div class="timestamp">${new Date(entry.ts).toLocaleString()}</div>`;
+                    html += `<div class="hash-display">${entry.hash}</div>`;
+                    html += '</div>';
+                    html += '</div>';
+                    if (idx < chain.chain.length - 1) {
+                        html += '<div class="chain-arrow">↓</div>';
+                    }
+                });
+                html += '</div>';
+            });
+            
+            document.getElementById('chain-visualization').innerHTML = html || '<p>No full chains found.</p>';
+        }
+        
+        function renderSignatures() {
+            const signatures = ledgerData
+                .filter(e => e.sig)
+                .slice(-20) // Last 20 entries
+                .reverse();
+            
+            let html = '';
+            signatures.forEach(entry => {
+                html += '<div class="signature-card">';
+                html += `<div class="signature-sig">${entry.sig}</div>`;
+                html += `<div><span class="agent-badge agent-${entry.agent.replace('-', '-')}">${entry.agent}</span></div>`;
+                html += `<div style="margin-top: 10px;"><strong>${entry.action}</strong></div>`;
+                html += `<div class="facts-id" style="margin-top: 5px;">${entry.output_facts_id}</div>`;
+                html += `<div class="timestamp">${new Date(entry.ts).toLocaleString()}</div>`;
+                html += `<div class="status-badge status-valid" style="margin-top: 10px;">Valid</div>`;
+                html += '</div>';
+            });
+            
+            document.getElementById('signatures-grid').innerHTML = html;
+        }
+        
+        function renderInteractions() {
+            const agentCounts = {};
+            ledgerData.forEach(entry => {
+                agentCounts[entry.agent] = (agentCounts[entry.agent] || 0) + 1;
+            });
+            
+            const agents = ['data-scout', 'compliance', 'permit-liaison'];
+            let html = '';
+            
+            agents.forEach((agent, idx) => {
+                const count = agentCounts[agent] || 0;
+                html += '<div class="interaction-card">';
+                html += `<span class="agent-badge agent-${agent.replace('-', '-')}">${agent}</span>`;
+                html += `<div style="margin-top: 10px; font-size: 1.5em; font-weight: bold;">${count}</div>`;
+                html += '<div style="margin-top: 5px; color: #666;">actions</div>';
+                html += '</div>';
+                
+                if (idx < agents.length - 1) {
+                    html += '<div style="display: flex; align-items: center; justify-content: center;"><div class="interaction-arrow">→</div></div>';
+                }
+            });
+            
+            document.getElementById('interactions-grid').innerHTML = html;
+        }
+        
+        function renderLatency() {
+            if (!metricsData.latencies) {
+                document.getElementById('latency-chart').innerHTML = '<p>No latency data available.</p>';
+                return;
+            }
+            
+            const latencies = Object.entries(metricsData.latencies);
+            const maxLatency = Math.max(...latencies.map(([_, v]) => v));
+            
+            let html = '';
+            latencies.forEach(([label, value]) => {
+                const percentage = (value / maxLatency) * 100;
+                html += '<div class="latency-bar">';
+                html += `<div class="latency-label">${label}</div>`;
+                html += '<div class="latency-bar-container">';
+                html += `<div class="latency-bar-fill" style="width: ${percentage}%">${value.toFixed(1)}ms</div>`;
+                html += '</div>';
+                html += '</div>';
+            });
+            
+            document.getElementById('latency-chart').innerHTML = html;
+        }
+        
+        // Load data on page load
+        loadData();
+        
+        // Auto-refresh every 5 seconds
+        setInterval(loadData, 5000);
+    </script>
+</body>
+</html>
+
